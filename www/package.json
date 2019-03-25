@@ -11,6 +11,7 @@
     "graphql": "^14.1.1",
     "react": "^16.8.5",
     "react-apollo": "^2.5.3",
+    "react-apollo-hooks": "^0.4.3",
     "react-dom": "^16.8.5",
     "react-router-dom": "^5.0.0",
     "react-scripts": "2.1.8",
@@ -20,7 +21,10 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "schema:download": "apollo schema:download --endpoint=http://localhost:4000/graphql",
+    "codegen:generate": "apollo codegen:generate --queries=./src/**/*.tsx --schema=../schema.json --outputFlat --target=typescript ./www/src/schemaTypes.ts",
+    "gen:types": "yarn schema:download && yarn codegen:generate"
   },
   "eslintConfig": {
     "extends": "react-app"
