@@ -15,5 +15,6 @@ export const typeDefs = gql`
     login(email: String!, password: String!): User
     playerTag(tag: String!): Boolean!
     register(email: String!, password: String!): Boolean!
+    stripeCharge(token: String!): Boolean!
   }
 `;

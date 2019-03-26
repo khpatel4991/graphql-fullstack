@@ -22,14 +22,6 @@ export const resolvers: IResolvers = {
       console.timeEnd(`Assign tag "${tag} to ${req.session.userId}"`);
       return user;
     },
-    register: async (_, { email, password }) => {
-      const hashedPassword: string = await argon2.hash(password);
-      await User.create({
-        email,
-        password: hashedPassword,
-      }).save();
-      return true;
-    },
     login: async (_, { email, password }, { req }) => {
       const user = await User.findOne({ where: { email } });
       if (!user) {
@@ -43,6 +35,24 @@ export const resolvers: IResolvers = {
       req.session.userId = user.id;
 
       return user;
+    },
+    register: async (_, { email, password }) => {
+      const hashedPassword: string = await argon2.hash(password);
+      await User.create({
+        email,
+        password: hashedPassword,
+      }).save();
+      return true;
+    },
+    stripeCharge: async (_, { token }, { req }) => {
+      console.log(`Token: ${token}`);
+      if (!req.session.userId) {
+        return false;
+      }
+      console.time(`Assign tag "${token} to ${req.session.userId}"`);
+      // const user = await User.findOneOrFail(req.session.userId);
+      console.timeEnd(`Assign tag "${token} to ${req.session.userId}"`);
+      return true;
     },
   },
 };
