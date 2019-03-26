@@ -9,8 +9,9 @@ import * as serviceWorker from './serviceWorker';
 import { Routes } from './Routes';
 
 const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql"
-})
+  uri: 'http://localhost:4000/graphql',
+  credentials: 'include',
+});
 
 const App = () => (
   <ApolloProvider client={client}>
@@ -18,7 +19,7 @@ const App = () => (
       <Routes />
     </ApolloHooksProvider>
   </ApolloProvider>
-)
+);
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

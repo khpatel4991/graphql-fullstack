@@ -1,6 +1,6 @@
-import * as React from "react";
-import { useMutation } from "react-apollo-hooks";
-import { gql } from "apollo-boost";
+import * as React from 'react';
+import { useMutation } from 'react-apollo-hooks';
+import { gql } from 'apollo-boost';
 
 const LOGIN_USER = gql`
   mutation login($email: String!, $password: String!) {
@@ -12,12 +12,12 @@ const LOGIN_USER = gql`
 `;
 
 export const LoginView = () => {
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
   const handleEmailChange = (e: any) => setEmail(e.target.value);
   const handlePasswordChange = (e: any) => setPassword(e.target.value);
   const mutate = useMutation(LOGIN_USER, {
-    variables: { email, password }
+    variables: { email, password },
   });
   const handleSubmit = (e: any) => {
     e.preventDefault();
