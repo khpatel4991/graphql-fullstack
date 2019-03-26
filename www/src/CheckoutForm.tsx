@@ -6,15 +6,19 @@ import { gql } from 'apollo-boost';
 import './index.css';
 
 const STRIPE_CHARGE = gql`
-  mutation stripeCharge($token: String!) {
-    stripeCharge(token: $token)
+  mutation createSubscription($source: String!) {
+    createSubscription(source: $source) {
+      id
+      email
+      stripeId
+    }
   }
 `;
 
 function CheckoutForm(props: any) {
   const mutate = useMutation(STRIPE_CHARGE);
   const [loading, setLoading] = React.useState(false);
-  async function getStripeToken() {
+  async function getStripeSource() {
     try {
       const {
         token: { id },
@@ -28,13 +32,14 @@ function CheckoutForm(props: any) {
   const checkoutHandler = (event: any) => {
     event.preventDefault();
     setLoading(true);
-    getStripeToken().then(id => {
-      if (id !== null) {
+    getStripeSource().then(source => {
+      if (source !== null) {
         mutate({
           variables: {
-            token: id,
+            source,
           },
         });
+        console.log(source);
       }
       setLoading(false);
     });

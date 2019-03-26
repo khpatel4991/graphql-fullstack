@@ -4,7 +4,8 @@ export const typeDefs = gql`
   type User {
     id: ID!
     email: String!
-    playerTag: String
+    stripeId: String
+    type: String!
   }
 
   type Query {
@@ -15,6 +16,6 @@ export const typeDefs = gql`
     login(email: String!, password: String!): User
     playerTag(tag: String!): Boolean!
     register(email: String!, password: String!): Boolean!
-    stripeCharge(token: String!): Boolean!
+    createSubscription(source: String!): User!
   }
 `;

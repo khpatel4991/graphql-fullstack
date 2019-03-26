@@ -1,5 +1,7 @@
 import { IResolvers } from 'graphql-tools';
 import * as argon2 from 'argon2';
+
+import { stripe } from './stripe';
 import { User } from './entity/User';
 
 export const resolvers: IResolvers = {
@@ -13,15 +15,6 @@ export const resolvers: IResolvers = {
     },
   },
   Mutation: {
-    playerTag: async (_, { tag }, { req }) => {
-      if (!req.session.userId) {
-        return null;
-      }
-      console.time(`Assign tag "${tag} to ${req.session.userId}"`);
-      const user = await User.findOneOrFail(req.session.userId);
-      console.timeEnd(`Assign tag "${tag} to ${req.session.userId}"`);
-      return user;
-    },
     login: async (_, { email, password }, { req }) => {
       const user = await User.findOne({ where: { email } });
       if (!user) {
@@ -44,15 +37,21 @@ export const resolvers: IResolvers = {
       }).save();
       return true;
     },
-    stripeCharge: async (_, { token }, { req }) => {
-      console.log(`Token: ${token}`);
-      if (!req.session.userId) {
-        return false;
+    createSubscription: async (_, { source }, { req }) => {
+      if (!req.session || !req.session.userId) {
+        throw new Error('Not Authenticated.');
       }
-      console.time(`Assign tag "${token} to ${req.session.userId}"`);
-      // const user = await User.findOneOrFail(req.session.userId);
-      console.timeEnd(`Assign tag "${token} to ${req.session.userId}"`);
-      return true;
+      console.time(`Assign tag "${source} to ${req.session.userId}"`);
+      const user = await User.findOneOrFail(req.session.userId);
+      console.timeEnd(`Assign tag "${source} to ${req.session.userId}"`);
+      const customer = await stripe.customers.create({
+        email: user.email,
+        source,
+      });
+      user.stripeId = customer.id;
+      user.type = 'paid';
+      await user.save();
+      return user;
     },
   },
 };
