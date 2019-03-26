@@ -8,12 +8,16 @@ import { CheckoutView } from './modules/user/CheckoutView';
 export const Routes = () => {
   return (
     <BrowserRouter>
-      <Switch>
-        <Route path="/login" component={LoginView} />
-        <Route path="/register" component={RegisterView} root />
-        <Route path="/me" component={MeView} />
-        <Route path="/checkout" component={CheckoutView} />
-      </Switch>
+      <div className="view">
+        <div className="centeredStuff">
+          <Switch>
+            <Route path="/login" component={LoginView} />
+            <Route path="/register" component={RegisterView} />
+            <Route path="/me" component={MeView} />
+            <Route path="/checkout" component={CheckoutView} />
+          </Switch>
+        </div>
+      </div>
     </BrowserRouter>
   );
 };
