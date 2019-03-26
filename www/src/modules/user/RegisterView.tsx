@@ -1,6 +1,12 @@
 import * as React from 'react';
 import { useMutation } from 'react-apollo-hooks';
 import { gql } from 'apollo-boost';
+import Label from 'reactstrap/lib/Label';
+import Form from 'reactstrap/lib/Form';
+import FormGroup from 'reactstrap/lib/FormGroup';
+import Input from 'reactstrap/lib/Input';
+import Button from 'reactstrap/lib/Button';
+import Col from 'reactstrap/lib/Col';
 
 import './styles.css';
 
@@ -19,27 +25,53 @@ export const RegisterView = () => {
     variables: { email, password },
   });
   const handleSubmit = (e: any) => {
-    e.preventDefault();
-    mutate();
+    try {
+      e.preventDefault();
+      mutate();
+      window.location.replace('/player');
+    } catch (e) {
+      console.log(e.message);
+    }
   };
   return (
-    <form className="center-form" onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="email">Email</label>
-        <input name="email" value={email} onChange={handleEmailChange} />
-      </div>
-      <div>
-        <label htmlFor="password">Password</label>
-        <input
-          name="password"
-          value={password}
-          onChange={handlePasswordChange}
-          type="password"
-        />
-      </div>
-      <div>
-        <button>Register</button>
-      </div>
-    </form>
+    <>
+      <Form onSubmit={handleSubmit}>
+        <FormGroup row>
+          <Label for="email" sm={2}>
+            Email
+          </Label>
+          <Col sm={10}>
+            <Input
+              type="email"
+              name="email"
+              id="email"
+              placeholder="john@doe.com"
+              value={email}
+              onChange={handleEmailChange}
+            />
+          </Col>
+        </FormGroup>
+        <FormGroup row>
+          <Label for="password" sm={2}>
+            Password
+          </Label>
+          <Col sm={10}>
+            <Input
+              type="password"
+              name="password"
+              id="password"
+              placeholder="secret password"
+              value={password}
+              onChange={handlePasswordChange}
+            />
+          </Col>
+        </FormGroup>
+        <FormGroup check row>
+          <Col sm={{ size: 10, offset: 2 }}>
+            <Button color="primary">Register</Button>
+          </Col>
+        </FormGroup>
+      </Form>
+    </>
   );
 };

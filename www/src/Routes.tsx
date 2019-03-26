@@ -4,6 +4,7 @@ import { LoginView } from './modules/user/LoginView';
 import { RegisterView } from './modules/user/RegisterView';
 import { MeView } from './modules/user/MeView';
 import { CheckoutView } from './modules/user/CheckoutView';
+import { PlayerView } from './modules/user/PlayerView';
 
 export const Routes = () => {
   return (
@@ -15,6 +16,7 @@ export const Routes = () => {
             <Route path="/register" component={RegisterView} />
             <Route path="/me" component={MeView} />
             <Route path="/checkout" component={CheckoutView} />
+            <Route path="/player" component={PlayerView} />
           </Switch>
         </div>
       </div>

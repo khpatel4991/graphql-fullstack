@@ -6,6 +6,7 @@ export const typeDefs = gql`
     email: String!
     stripeId: String
     type: String!
+    playerTag: String
   }
 
   type Query {

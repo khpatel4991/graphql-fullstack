@@ -5,13 +5,13 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('text')
+  @Column('text', { unique: true })
   email: string;
 
   @Column('text')
   password: string;
 
-  @Column('text', { nullable: true })
+  @Column('text', { nullable: true, unique: true })
   stripeId: string;
 
   @Column('text', { default: 'free-trial' })

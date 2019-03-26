@@ -16,18 +16,23 @@ export const resolvers: IResolvers = {
   },
   Mutation: {
     login: async (_, { email, password }, { req }) => {
-      const user = await User.findOne({ where: { email } });
-      if (!user) {
+      try {
+        console.time(`Logging in ${email}: `);
+        const user = await User.findOne({ where: { email } });
+        console.timeEnd(`Logging in ${email}: `);
+        if (!user) {
+          throw new Error(`No user with email ${email}`);
+        }
+        const validPassword = await argon2.verify(user.password, password);
+        if (!validPassword) {
+          throw new Error(`Password mismatch for ${email}`);
+        }
+        req.session.userId = user.id;
+        return user;
+      } catch (e) {
+        console.error(e);
         return null;
       }
-      const validPassword = await argon2.verify(user.password, password);
-      if (!validPassword) {
-        return null;
-      }
-
-      req.session.userId = user.id;
-
-      return user;
     },
     register: async (_, { email, password }) => {
       const hashedPassword: string = await argon2.hash(password);

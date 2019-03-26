@@ -3,10 +3,12 @@ import ReactDOM from 'react-dom';
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-import './index.css';
 import * as serviceWorker from './serviceWorker';
 import { Routes } from './Routes';
+
+import './custom.scss';
 
 const client = new ApolloClient({
   uri: 'http://localhost:4000/graphql',

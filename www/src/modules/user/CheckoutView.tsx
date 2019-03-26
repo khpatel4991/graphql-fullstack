@@ -7,7 +7,7 @@ import CheckoutForm from '../../CheckoutForm';
 
 export const CheckoutView = () => {
   return (
-    <StripeProvider apiKey={'pk_test_YZfIuHeEzfG78v6hnaLMN5WY00aghrRg5i'}>
+    <StripeProvider apiKey={process.env.REACT_APP_STRIPE_KEY!}>
       <Elements>
         <CheckoutForm />
       </Elements>
