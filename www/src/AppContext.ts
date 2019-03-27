@@ -3,14 +3,20 @@ import React from 'react';
 export interface IPlayer {
   player: { name: string; tag: string };
 }
-export interface IAppContext {
+
+export type Action = {
+  type: string;
+  payload: any;
+};
+
+export type State = {
   player: IPlayer | null;
-  error: string;
+  error: string | null;
   loading: boolean;
-}
+};
 
 export const AppContext = React.createContext<
-  IAppContext | string | number | boolean
+  State | string | number | boolean
 >({
   player: null,
   error: '',

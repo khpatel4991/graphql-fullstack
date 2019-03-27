@@ -14,9 +14,9 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    login(email: String!, password: String!): User
-    playerTag(tag: String!): Boolean!
-    register(email: String!, password: String!): Boolean!
     createSubscription(source: String!): User!
+    login(email: String!, password: String!): User
+    playerTag(tag: String!): User!
+    register(email: String!, password: String!): Boolean!
   }
 `;

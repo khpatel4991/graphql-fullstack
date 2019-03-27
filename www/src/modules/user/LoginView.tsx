@@ -7,6 +7,8 @@ import FormGroup from 'reactstrap/lib/FormGroup';
 import Input from 'reactstrap/lib/Input';
 import Button from 'reactstrap/lib/Button';
 import Col from 'reactstrap/lib/Col';
+import Alert from 'reactstrap/lib/Alert';
+import Row from 'reactstrap/lib/Row';
 
 const LOGIN_USER = gql`
   mutation login($email: String!, $password: String!) {
@@ -18,6 +20,7 @@ const LOGIN_USER = gql`
 `;
 
 export const LoginView = () => {
+  const [invalid, setInvalid] = React.useState(false);
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const handleEmailChange = (e: any) => setEmail(e.target.value);
@@ -28,15 +31,34 @@ export const LoginView = () => {
   const handleSubmit = (e: any) => {
     try {
       e.preventDefault();
-      mutate();
-      window.location.replace('/player');
+      mutate().then((result: any) => {
+        const login = 'data' in result && result.data.login !== null;
+        if (login) {
+          setInvalid(false);
+          return window.location.replace('/player');
+        }
+        setInvalid(true);
+      });
     } catch (e) {
-      console.log(e.message);
+      setInvalid(true);
     }
   };
   return (
     <>
       <Form onSubmit={handleSubmit}>
+        {invalid && (
+          <Row>
+            <Col sm={2} />
+            <Col sm={10}>
+              <Alert color="danger">
+                Incorrect Email/Password, Try again or{' '}
+                <a href="#" className="alert-link">
+                  Reset Password?
+                </a>
+              </Alert>
+            </Col>
+          </Row>
+        )}
         <FormGroup row>
           <Label for="email" sm={2}>
             Email

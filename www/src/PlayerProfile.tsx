@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { AppContext, IAppContext } from './AppContext';
+import { AppContext, State } from './AppContext';
 
 export const PlayerProfile = () => {
-  const context = React.useContext<IAppContext | string | number | boolean>(
+  const context = React.useContext<State | string | number | boolean>(
     AppContext
   );
   console.log(context);

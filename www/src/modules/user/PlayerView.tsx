@@ -31,12 +31,10 @@ export const PlayerView = () => {
   if (data.me.playerTag) {
     return <p>Lets get your profile from tag: {data.me.playerTag}</p>;
   }
-  const handleData = (data: any) => {
-    console.log(data);
-  };
   return (
     <div className="player-view-container">
-      <CachedTypeAhead dataUpdater={handleData} />
+      <h2>Let's add your Clash Royale Player Tag</h2>
+      <CachedTypeAhead />
     </div>
   );
 };
