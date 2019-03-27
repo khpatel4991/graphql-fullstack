@@ -10,6 +10,7 @@ import {
   withLatestFrom,
   combineLatest,
 } from 'rxjs/operators';
+import { Form, FormGroup, Label, Input, Container } from 'reactstrap';
 
 import { AppProvider } from './AppContext';
 
@@ -19,7 +20,12 @@ const requestData = (url: string, mapFunc: Function, key: string) => {
   const xhr = new XMLHttpRequest();
   if (cache.has(key)) {
     return from(
-      Promise.resolve([key, cache.get(key), performance.now() - start, true])
+      Promise.resolve([
+        key,
+        cache.get(key).player,
+        performance.now() - start,
+        true,
+      ])
     );
   }
   return from(
@@ -32,8 +38,8 @@ const requestData = (url: string, mapFunc: Function, key: string) => {
     })
   ).pipe(
     switchMap(_ => mapFunc(xhr.response)),
-    map(data => [key, data, performance.now() - start], false),
-    tap(_ => cache.set(key, _))
+    map(data => [key, data, performance.now() - start, false]),
+    tap(([_, data]) => cache.set(key, data))
   );
 };
 
@@ -43,8 +49,8 @@ const mapPosts = (response: any) => {
   return of(parsed ? parsed : null);
 };
 
-export const CachedTypeAhead = () => {
-  const [changeHandler, [player, data, time]] = useEventCallback(
+export const CachedTypeAhead = ({ dataUpdater = (_: any) => {} }) => {
+  const [changeHandler, [player, data, time, cached]] = useEventCallback(
     (event$: any, inputs$: any, state$: any) =>
       event$.pipe(
         map((event: any) => event.target.value),
@@ -58,24 +64,28 @@ export const CachedTypeAhead = () => {
             mapPosts,
             q
           )
-        )
+        ),
+        tap(dataUpdater)
       ),
-    ['', {}, -1],
+    ['', { player: null, loading: false, error: '' }, -1, false],
     []
   );
   return (
     <AppProvider value={data}>
-      <div className="App">
-        <label htmlFor="q">
-          Tag:
-          <input onChange={changeHandler} name="q" id="q" />
-        </label>
-        <p>
-          {' '}
-          <code>Time: {time}ms</code>
-          {JSON.stringify(data)}
-        </p>
-      </div>
+      <Container>
+        <Form>
+          <FormGroup>
+            <Label for="q">Tag: </Label>
+            <Input
+              type="text"
+              name="q"
+              id="q"
+              onChange={changeHandler}
+              placeholder="#ABCDEF"
+            />
+          </FormGroup>
+        </Form>
+      </Container>
     </AppProvider>
   );
 };

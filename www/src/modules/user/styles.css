@@ -2,3 +2,9 @@
   padding: 40px;
   font-size: 1rem;
 }
+
+.player-view-container {
+  height: 500px;
+  width: 500px;
+  background-color: powderblue;
+}
