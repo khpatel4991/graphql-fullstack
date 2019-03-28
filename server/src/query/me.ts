@@ -1,6 +1,10 @@
 import { User } from '../entity/User';
 
-export const me = async (_: any, __: any, { req }: any): Promise<User> => {
+export const me = async (
+  _: any,
+  __: any,
+  { req }: any
+): Promise<User | undefined> => {
   try {
     if (!req.session.userId) {
       throw new Error('No user in session');
@@ -12,5 +16,6 @@ export const me = async (_: any, __: any, { req }: any): Promise<User> => {
     return user;
   } catch (e) {
     // console.log(e.message);
+    return undefined;
   }
 };

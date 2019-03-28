@@ -4,9 +4,9 @@ export const typeDefs = gql`
   type User {
     id: ID!
     email: String!
+    playerTag: String
     stripeId: String
     type: String!
-    playerTag: String
   }
 
   type Query {
@@ -16,7 +16,7 @@ export const typeDefs = gql`
   type Mutation {
     createSubscription(source: String!): User!
     login(email: String!, password: String!): User
-    playerTag(tag: String!): User!
+    playerTag(tag: String!): User
     register(email: String!, password: String!): Boolean!
   }
 `;
