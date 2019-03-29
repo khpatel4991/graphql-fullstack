@@ -10,7 +10,7 @@ export const typeDefs = gql`
   type Mutation {
     createSubscription(source: String!): User!
     login(email: String!, password: String!): User
-    playerTag(tag: String!): User!
+    playerTag(tag: String!): Player
     register(email: String!, password: String!): Boolean!
   }
 
@@ -19,34 +19,38 @@ export const typeDefs = gql`
     email: String!
     stripeId: String
     type: String!
-    player: Player
   }
 
   type Player {
     id: ID!
-    tag: String!
-    name: String!
-    expLevel: Int!
-    trophies: Int!
-    bestTrophies: Int!
-    wins: Int!
-    losses: Int!
+    achievements: [Achievement!]!
+    arena: Arena!
+    badges: [Badge!]!
     battleCount: Int!
-    threeCrownWins: Int!
+    bestTrophies: Int!
+    cards: [Card!]!
     challengeCardsWon: Int!
     challengeMaxWins: Int!
-    tournamentCardsWon: Int!
-    tournamentBattleCount: Int!
-    role: String!
+    clan: Clan!
+    clanCardsCollected: Int!
+    currentDeck: [Card!]!
+    currentFavouriteCard: Card!
     donations: Int!
     donationsReceived: Int!
-    totalDonations: Int!
-    warDayWins: Int!
-    clanCardsCollected: Int!
-    starPoints: Int!
-    clan: Clan!
-    arena: Arena!
+    expLevel: Int!
     leagueStatistics: LeagueStatistics!
+    losses: Int!
+    name: String!
+    role: String!
+    starPoints: Int!
+    tag: String!
+    threeCrownWins: Int!
+    totalDonations: Int!
+    tournamentBattleCount: Int!
+    tournamentCardsWon: Int!
+    trophies: Int!
+    warDayWins: Int!
+    wins: Int!
   }
 
   type Clan {
@@ -55,20 +59,47 @@ export const typeDefs = gql`
     badgeId: String!
   }
 
+  type IconUrls {
+    medium: String!
+  }
+
+  type Card {
+    id: String!
+    count: Int!
+    iconUrls: IconUrls!
+    level: Int!
+    maxLevel: Int!
+    name: String!
+  }
+
+  type Achievement {
+    info: String!
+    name: String!
+    stars: Int!
+    target: Int!
+    value: Int!
+  }
+
+  type Badge {
+    level: Int
+    maxLevel: Int
+    name: String!
+  }
+
   type Arena {
     is: String!
     name: String!
   }
 
   type CurrentSeason {
-    trophies: Int!
     bestTrophies: Int!
+    trophies: Int!
   }
 
   type PreviousSeason {
     id: String!
-    trophies: Int!
     bestTrophies: Int!
+    trophies: Int!
   }
 
   type BestSeason {
@@ -77,8 +108,8 @@ export const typeDefs = gql`
   }
 
   type LeagueStatistics {
+    bestSeason: BestSeason!
     currentSeason: CurrentSeason!
     previousSeason: PreviousSeason!
-    bestSeason: BestSeason!
   }
 `;

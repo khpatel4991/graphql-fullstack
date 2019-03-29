@@ -21,7 +21,7 @@ describe('Me', () => {
     expect(User.findOne).toBeCalledWith(req.session.userId);
     expect(ans).toBeUndefined();
   });
-  it('returns user when session userId is valid', async () => {
+  it('returns user when valid session userId', async () => {
     User.findOne = jest.fn().mockResolvedValueOnce({
       id: 12,
       email: 'john@doe.com',
@@ -31,7 +31,7 @@ describe('Me', () => {
         userId: 'hello',
       },
     };
-    const ans = await me({}, {}, { req });
+    const ans: any = await me({}, {}, { req });
     expect(User.findOne).toBeCalledTimes(1);
     expect(User.findOne).toBeCalledWith(req.session.userId);
     expect(ans.id).toBe(12);

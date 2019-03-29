@@ -4,30 +4,28 @@ import { Player } from '../entity/Player';
 
 export const playerTag = async (_: any, { tag }: any, { req }: any) => {
   try {
-    console.log(`Looking for ${tag}`);
     if (!req.session.userId) {
       throw new Error('No user. Please login');
     }
-    console.log(`Userid exists ${req.session.userId}`);
     const user = await User.findOne(req.session.userId);
     if (!user) {
       throw new Error('Cant find user');
     }
-    console.log(`User exists`);
     const data = await getPlayer(tag);
     if (!data) {
       throw new Error('Cant find user with tag');
     }
-    const player = await Player.create(data).save();
-    console.log(
-      `Data: ${JSON.stringify(data.tag)} exists ${tag} with player: ${
-        player.name
-      }`
-    );
-    user.player = player;
-    await user.save();
-    return user;
+    let player = await Player.findOne({ where: { tag } });
+    if (!player) {
+      player = Player.create(data);
+      await player.save();
+    } else {
+      await Player.update(player.id, data);
+      await player.reload();
+    }
+    return player;
   } catch (e) {
+    console.log(e.message);
     return e;
   }
 };
