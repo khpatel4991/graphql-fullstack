@@ -11,10 +11,13 @@ export const playerTag = async (_: any, { tag }: any, { req }: any) => {
     if (!user) {
       throw new Error('Cant find user');
     }
+    // console.time(`Player ${tag} fetched`);
     const data = await getPlayer(tag);
+    // console.timeEnd(`Player ${tag} fetched`);
     if (!data) {
       throw new Error('Cant find user with tag');
     }
+    // console.time(`Persist ${tag}`);
     let player = await Player.findOne({ where: { tag } });
     if (!player) {
       player = Player.create(data);
@@ -23,9 +26,9 @@ export const playerTag = async (_: any, { tag }: any, { req }: any) => {
       await Player.update(player.id, data);
       await player.reload();
     }
+    // console.timeEnd(`Persist ${tag}`);
     return player;
   } catch (e) {
-    console.log(e.message);
     return e;
   }
 };
