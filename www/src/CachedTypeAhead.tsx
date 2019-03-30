@@ -12,8 +12,6 @@ import {
 } from 'rxjs/operators';
 import { Form, FormGroup, Label, Input, Container } from 'reactstrap';
 
-import { AppProvider } from './AppContext';
-
 const cache = new Map();
 const requestData = (url: string, mapFunc: Function, key: string) => {
   const start = performance.now();
@@ -71,21 +69,19 @@ export const CachedTypeAhead = ({ dataUpdater = (_: any) => {} }) => {
     []
   );
   return (
-    <AppProvider value={data}>
-      <Container>
-        <Form>
-          <FormGroup>
-            <Label for="q">Tag: </Label>
-            <Input
-              type="text"
-              name="q"
-              id="q"
-              onChange={changeHandler}
-              placeholder="#ABCDEF"
-            />
-          </FormGroup>
-        </Form>
-      </Container>
-    </AppProvider>
+    <Container>
+      <Form>
+        <FormGroup>
+          <Label for="q">Tag: </Label>
+          <Input
+            type="text"
+            name="q"
+            id="q"
+            onChange={changeHandler}
+            placeholder="#ABCDEF"
+          />
+        </FormGroup>
+      </Form>
+    </Container>
   );
 };

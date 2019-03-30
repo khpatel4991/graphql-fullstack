@@ -11,7 +11,6 @@ const ME = gql`
     me {
       id
       email
-      playerTag
     }
   }
 `;
