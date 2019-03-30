@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  BaseEntity,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
+import { Battle } from './Battle';
 
 export type Achievement = {
   info: string;
@@ -100,4 +108,8 @@ export class Player extends BaseEntity {
   warDayWins: number;
   @Column('integer')
   wins: number;
+
+  @ManyToMany(_ => Battle)
+  @JoinTable({ name: 'clash_player_battles' })
+  battles: Battle[];
 }

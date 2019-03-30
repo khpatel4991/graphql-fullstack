@@ -14,6 +14,7 @@ export const typeDefs = gql`
   }
 
   type Mutation {
+    battleLog(playerTag: String!): [Battle!]!
     clanTag(tag: String!): Clan
     login(email: String!, password: String!): User
     playerTag(tag: String!): Player
@@ -25,6 +26,36 @@ export const typeDefs = gql`
     badgeId: String!
     name: String!
     tag: String!
+  }
+
+  type BattlePlayerCard {
+    name: String!
+    level: Int!
+    maxLevel: Int!
+    iconUrls: [IconUrls!]!
+  }
+
+  type BattlePlayer {
+    cards: [BattlePlayerCard!]!
+    clan: PlayerClan!
+    crowns: Int!
+    kingTowerHitPoints: Int!
+    name: String!
+    princessTowersHitPoints: [Int!]!
+    startingTrophies: Int!
+    tag: String!
+    trophyChange: Int
+  }
+
+  type Battle {
+    arena: Arena!
+    battleTime: String!
+    deckSelection: String!
+    gameMode: GameMode!
+    isLadderTournament: Boolean!
+    opponent: [BattlePlayer!]!
+    team: [BattlePlayer!]!
+    type: String!
   }
 
   type User {
@@ -56,7 +87,7 @@ export const typeDefs = gql`
     clanChestPoints: Int!
     clanChestStatus: String!
     clanScore: Int!
-    clanWarTrophies: Int!
+    clanWarTrophies: Int
     description: String!
     donationsPerWeek: Int!
     location: Location!
@@ -135,7 +166,12 @@ export const typeDefs = gql`
   }
 
   type Arena {
-    is: String!
+    id: String!
+    name: String!
+  }
+
+  type GameMode {
+    id: Int!
     name: String!
   }
 
