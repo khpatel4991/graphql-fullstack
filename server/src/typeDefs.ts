@@ -56,6 +56,7 @@ export const typeDefs = gql`
     clanChestPoints: Int!
     clanChestStatus: String!
     clanScore: Int!
+    clanWarTrophies: Int!
     description: String!
     donationsPerWeek: Int!
     location: Location!
