@@ -1,6 +1,10 @@
 import { gql } from 'apollo-server-express';
 
 export const typeDefs = gql`
+  type Subscription {
+    playerUpsert: Player
+  }
+
   type Query {
     me: User
     users: [User!]
@@ -8,10 +12,16 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    createSubscription(source: String!): User!
+    stripeSource(source: String!): User!
     login(email: String!, password: String!): User
     playerTag(tag: String!): Player
     register(email: String!, password: String!): Boolean!
+  }
+
+  type Clan {
+    tag: String!
+    name: String!
+    badgeId: String!
   }
 
   type User {
@@ -51,12 +61,6 @@ export const typeDefs = gql`
     trophies: Int!
     warDayWins: Int!
     wins: Int!
-  }
-
-  type Clan {
-    tag: String!
-    name: String!
-    badgeId: String!
   }
 
   type IconUrls {

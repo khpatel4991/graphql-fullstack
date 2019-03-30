@@ -1,11 +1,7 @@
 import { stripe } from '../stripe';
 import { User } from '../entity/User';
 
-export const createSubscription = async (
-  _: any,
-  { source }: any,
-  { req }: any
-) => {
+export const stripeSource = async (_: any, { source }: any, { req }: any) => {
   if (!req.session || !req.session.userId) {
     throw new Error('Not Authenticated.');
   }
