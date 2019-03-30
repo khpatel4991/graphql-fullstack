@@ -1,25 +1,14 @@
 import { getPlayer } from '../crApi';
-import { User } from '../entity/User';
 import { Player } from '../entity/Player';
 import { pubsub } from '..';
 import { PLAYER_CREATED, PLAYER_UPDATED } from '../topics';
 
-export const playerTag = async (_: any, { tag }: any, { req }: any) => {
+export const playerTag = async (_: any, { tag }: any, __: any) => {
   try {
-    if (!req.session.userId) {
-      throw new Error('No user. Please login');
-    }
-    const user = await User.findOne(req.session.userId);
-    if (!user) {
-      throw new Error('Cant find user');
-    }
-    // console.time(`Player ${tag} fetched`);
     const data = await getPlayer(tag);
-    // console.timeEnd(`Player ${tag} fetched`);
     if (!data) {
       throw new Error('Cant find user with tag');
     }
-    // console.time(`Persist ${tag}`);
     let player = await Player.findOne({ where: { tag } });
     if (!player) {
       player = Player.create(data);
@@ -30,7 +19,6 @@ export const playerTag = async (_: any, { tag }: any, { req }: any) => {
       await player.reload();
       pubsub.publish(PLAYER_UPDATED, { playerUpsert: player });
     }
-    // console.timeEnd(`Persist ${tag}`);
     return player;
   } catch (e) {
     return e;

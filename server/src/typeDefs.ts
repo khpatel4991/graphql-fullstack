@@ -2,26 +2,29 @@ import { gql } from 'apollo-server-express';
 
 export const typeDefs = gql`
   type Subscription {
-    playerUpsert: Player
+    clanUpsert: Clan!
+    playerUpsert: Player!
   }
 
   type Query {
+    clans: [Clan!]
     me: User
-    users: [User!]
     players: [Player!]
+    users: [User!]
   }
 
   type Mutation {
-    stripeSource(source: String!): User!
+    clanTag(tag: String!): Clan
     login(email: String!, password: String!): User
     playerTag(tag: String!): Player
     register(email: String!, password: String!): Boolean!
+    stripeSource(source: String!): User!
   }
 
-  type Clan {
-    tag: String!
-    name: String!
+  type PlayerClan {
     badgeId: String!
+    name: String!
+    tag: String!
   }
 
   type User {
@@ -29,6 +32,46 @@ export const typeDefs = gql`
     email: String!
     stripeId: String
     type: String!
+  }
+
+  type ClanMember {
+    arena: Arena!
+    clanChestPoints: Int!
+    clanRank: Int!
+    donations: Int!
+    donationsReceived: Int!
+    expLevel: Int!
+    name: String!
+    previousClanRank: Int!
+    role: String!
+    tag: String!
+    trophies: Int!
+  }
+
+  type Clan {
+    id: ID!
+    badgeId: Int!
+    clanChestLevel: Int!
+    clanChestMaxLevel: Int!
+    clanChestPoints: Int!
+    clanChestStatus: String!
+    clanScore: Int!
+    description: String!
+    donationsPerWeek: Int!
+    location: Location!
+    memberList: [ClanMember!]!
+    members: Int!
+    name: String!
+    requiredTrophies: Int!
+    tag: String!
+    type: String!
+  }
+
+  type Location {
+    id: Int!
+    name: String!
+    isCountry: Boolean!
+    countryCode: String!
   }
 
   type Player {
@@ -41,7 +84,7 @@ export const typeDefs = gql`
     cards: [Card!]!
     challengeCardsWon: Int!
     challengeMaxWins: Int!
-    clan: Clan!
+    clan: PlayerClan!
     clanCardsCollected: Int!
     currentDeck: [Card!]!
     currentFavouriteCard: Card!

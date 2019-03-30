@@ -20,14 +20,6 @@ describe('Mutation - playerTag', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
-  it('returns undefined when no userid in session', async () => {
-    const req = {
-      session: {},
-    };
-    const result = await playerTag({}, { tag: 'asd' }, { req });
-    expect(result.message).toBe('No user. Please login');
-    //expect(result).toBe();
-  });
   it('returns undefined when invalid cr tag', async () => {
     const req = {
       session: {
