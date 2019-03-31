@@ -2,8 +2,8 @@ import { getPlayerBattleLog, getPlayer } from '../crApi';
 import { Player } from '../entity/Player';
 import { Battle } from '../entity/Battle';
 import { pubsub } from '..';
-import { PLAYER_CREATED } from '../topics';
-import { PlayerBattle } from '../entity/PlayerBattle';
+import { PLAYER_CREATED, BATTLE_ADDED } from '../topics';
+// import { PlayerBattle } from '../entity/PlayerBattle';
 
 export const battleLog = async (_: any, { playerTag }: any, __: any) => {
   try {
@@ -21,8 +21,19 @@ export const battleLog = async (_: any, { playerTag }: any, __: any) => {
     if (!data) {
       throw new Error('Cant find player battles');
     }
-    const b = data[0];
-    await Battle.create(b).save();
+    const saveAllBattles = data.map(battle => {
+      const { battleTime } = battle;
+      return new Promise(async resolve => {
+        let existing = await Battle.findOne({ where: { battleTime } });
+        if (!existing) {
+          existing = Battle.create(battle);
+          await existing.save();
+          pubsub.publish(BATTLE_ADDED, { battleAdded: existing });
+        }
+        resolve();
+      });
+    });
+    await Promise.all(saveAllBattles);
     return data;
   } catch (e) {
     console.log('Error', e.message);
