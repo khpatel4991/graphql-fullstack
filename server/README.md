@@ -2,7 +2,7 @@
 
 [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest) [![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
 
-##Quick Start
+## Quick Start
 
 Install dependencies:
 
@@ -16,7 +16,7 @@ Start the GraphQL playground:
 yarn start # OR npm start
 ```
 
-This will start the GrpahQL service (by default on localhost:4000) where you can issue GraphQL requests and access GraphQL Playground in the browser:
+This will start the GraphQL service (by default on localhost:4000) where you can issue GraphQL requests and access GraphQL Playground in the browser:
 
 ![GraphQL Playground](img/graphql-playground.png)
 
