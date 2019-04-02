@@ -4,6 +4,7 @@ export const typeDefs = gql`
   type Subscription {
     battleAdded: Battle!
     clanUpsert: Clan!
+    playerBattleAdded: Battle!
     playerUpsert: Player!
   }
 
@@ -43,7 +44,7 @@ export const typeDefs = gql`
     kingTowerHitPoints: Int!
     name: String!
     princessTowersHitPoints: [Int!]!
-    startingTrophies: Int!
+    startingTrophies: Int
     tag: String!
     trophyChange: Int
   }

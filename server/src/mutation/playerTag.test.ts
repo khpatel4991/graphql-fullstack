@@ -20,18 +20,6 @@ describe('Mutation - playerTag', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
-  it('returns undefined when invalid cr tag', async () => {
-    const req = {
-      session: {
-        userId: 'userId',
-      },
-    };
-    User.findOne = jest.fn().mockResolvedValueOnce(undefined);
-    const result = await playerTag({}, { tag: 'asd' }, { req });
-    expect(result.message).toBe('Cant find user');
-    expect(User.findOne).toBeCalledTimes(1);
-    expect(User.findOne).toBeCalledWith('userId');
-  });
   it('returns player with new valid cr tag', async () => {
     const req = {
       session: {
@@ -39,10 +27,6 @@ describe('Mutation - playerTag', () => {
       },
     };
     const saveSpy = jest.fn().mockResolvedValueOnce({});
-    User.findOne = jest.fn().mockResolvedValueOnce({
-      id: 'userId',
-      email: 'john@doe.com',
-    });
     Player.findOne = jest.fn().mockResolvedValueOnce(undefined);
     Player.create = jest.fn().mockReturnValueOnce({
       save: saveSpy,
@@ -51,8 +35,6 @@ describe('Mutation - playerTag', () => {
       tag: 'asd',
     });
     const result = await playerTag({}, { tag: 'asd' }, { req });
-    expect(User.findOne).toBeCalledTimes(1);
-    expect(User.findOne).toBeCalledWith('userId');
     expect(MockApi.getPlayer).toBeCalledTimes(1);
     expect(MockApi.getPlayer).toBeCalledWith('asd');
     expect(Player.findOne).toBeCalledTimes(1);
@@ -73,10 +55,6 @@ describe('Mutation - playerTag', () => {
       },
     };
     const reloadSpy = jest.fn().mockResolvedValueOnce({});
-    User.findOne = jest.fn().mockResolvedValueOnce({
-      id: 'userId',
-      email: 'john@doe.com',
-    });
     Player.findOne = jest.fn().mockResolvedValueOnce({
       id: 'qwe',
       name: 'lion',
@@ -85,8 +63,6 @@ describe('Mutation - playerTag', () => {
     });
     Player.update = jest.fn().mockResolvedValueOnce({});
     await playerTag({}, { tag: 'asd' }, { req });
-    expect(User.findOne).toBeCalledTimes(1);
-    expect(User.findOne).toBeCalledWith('userId');
     expect(MockApi.getPlayer).toBeCalledTimes(1);
     expect(MockApi.getPlayer).toBeCalledWith('asd');
     expect(Player.findOne).toBeCalledTimes(1);
