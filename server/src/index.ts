@@ -1,45 +1,41 @@
 import 'dotenv/config';
 
 import 'reflect-metadata';
-import { createServer } from 'http';
-import * as express from 'express';
-import * as session from 'express-session';
 import { PubSub } from 'graphql-subscriptions';
-import { createConnection } from 'typeorm';
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer } from 'apollo-server';
+import { v1 as neo4j } from 'neo4j-driver';
+import { makeAugmentedSchema } from 'neo4j-graphql-js';
 import { resolvers } from './resolvers';
 import { typeDefs } from './typeDefs';
+// import { createServer } from 'http';
 
 export const pubsub = new PubSub();
 
+const schema = makeAugmentedSchema({
+  typeDefs,
+  resolvers,
+});
+
+const driver = neo4j.driver(
+  process.env.NEO4J_URI || 'bolt://localhost:7687',
+  neo4j.auth.basic(
+    process.env.NEO4J_USER || 'neo4j',
+    process.env.NEO4J_PASSWORD || 'neo4j'
+  )
+);
+
 const startServer = async () => {
   const apollo = new ApolloServer({
-    typeDefs,
-    resolvers,
-    context: ({ req }: any) => ({ req }),
+    context: { driver },
+    schema,
   });
-  await createConnection();
-  const app = express();
-  app.use(
-    session({
-      secret: 'sdfsadfsfxcnmv,nzxcvm,.nzxcv',
-      resave: false,
-      saveUninitialized: false,
-    })
-  );
-  apollo.applyMiddleware({
-    app,
-    cors: {
-      credentials: true,
-      origin: 'http://localhost:3000',
-    },
-  });
-  const subServer = createServer(app);
-  apollo.installSubscriptionHandlers(subServer);
-  subServer.listen({ port: 4000 }, () => {
-    console.log(
-      `🚀 Server ready at http://localhost:4000${apollo.graphqlPath}`
-    );
+  apollo.listen(process.env.GRAPHQL_LISTEN_PORT, '0.0.0.0').then(({ url }) => {
+    console.log(`GraphQL API ready at ${url}`);
+    // const server = createServer();
+    // apollo.installSubscriptionHandlers(server);
+    // server.listen(5001, '0.0.0.0', () => {
+    //   console.log(`🚀 Subscriptions Server Ready at http://localhost:5001`);
+    // });
   });
 };
 

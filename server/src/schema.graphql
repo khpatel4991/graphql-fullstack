@@ -1,0 +1,124 @@
+type Mutation {
+  battleLog(playerTag: String!): [Battle!]!
+  clanTag(tag: String!): Clan
+  playerTag(tag: String!): Player
+}
+
+type Arena {
+  id: ID!
+  name: String!
+  battles: [Battle!]! @relation(name: "PLAYED_IN", direction: "IN")
+  players: [Player!]! @relation(name: "LADDER_ARENA", direction: "IN")
+}
+
+type Battle {
+  id: ID!
+  arena: Arena! @relation(name: "PLAYED_IN", direction: "OUT")
+  battleTime: DateTime!
+  gameMode: GameMode! @relation(name: "GAME_MODE", direction: "OUT")
+  isLadderTournament: Boolean!
+  opponent: [Opponent!]! @relation(name: "OPPONENT", direction: "OUT")
+  team: [Team!]! @relation(name: "TEAM", direction: "OUT")
+  type: String!
+}
+
+type Card {
+  id: ID!
+  level: Int
+  name: String!
+  maxLevel: Int!
+  iconurl: String!
+}
+
+type Clan {
+  tag: ID!
+  badgeId: Int!
+  clanChestLevel: Int!
+  clanChestMaxLevel: Int!
+  clanChestPoints: Int
+  clanChestStatus: String!
+  clanScore: Int!
+  clanWarTrophies: Int
+  description: String!
+  donationsPerWeek: Int!
+  location: Location! @relation(name: "IN_REGION", direction: "IN")
+  name: String!
+  members: Int!
+  memberList: [ClanMember!] @relation(name: "MEMBER_OF", direction: "IN")
+  type: String!
+}
+
+type ClanMember @relation(name: "MEMBER_OF") {
+  from: Clan!
+  to: Player!
+  clanChestPoints: Int!
+  clanRank: Int!
+  donations: Int!
+  donationsReceived: Int!
+  expLevel: Int!
+  previousClanRank: Int!
+  role: String!
+}
+
+type GameMode {
+  id: ID!
+  name: String!
+  battles: [Battle!]! @relation(name: "GAME_MODE", direction: "IN")
+}
+
+type Location {
+  id: ID!
+  name: String!
+  isCountry: Boolean!
+  countryCode: String!
+  clans: [Clan!] @relation(name: "IN_REGION", direction: "OUT")
+}
+
+type Opponent @relation(name: "OPPONENT") {
+  from: Battle!
+  to: Player!
+  cards: [Card!]!
+  crowns: Int!
+  kingTowerHitPoints: Int!
+  princessTowersHitPoints: [Int!]!
+  startingTrophies: Int
+  trophyChange: Int
+}
+
+type Player {
+  tag: ID!
+  arena: Arena! @relation(name: "LADDER_ARENA", direction: OUT)
+  battleCount: Int!
+  battlesAsTeam: [Battle!] @relation(name: "TEAM", direction: "IN")
+  battlesAsOpponent: [Battle!] @relation(name: "OPPONENT", direction: "IN")
+  bestTrophies: Int!
+  cards: [Card!]!
+  challengeCardsWon: Int!
+  challengeMaxWins: Int!
+  clan: Clan @relation(name: "MEMBER_OF", direction: "OUT")
+  clanCardsCollected: Int!
+  currentDeck: [Card!]!
+  currentFavouriteCard: Card!
+  expLevel: Int!
+  losses: Int!
+  name: String!
+  starPoints: Int!
+  threeCrownWins: Int!
+  totalDonations: Int!
+  tournamentBattleCount: Int!
+  tournamentCardsWon: Int!
+  trophies: Int!
+  warDayWins: Int!
+  wins: Int!
+}
+
+type Team @relation(name: "TEAM") {
+  from: Battle!
+  to: Player!
+  cards: [Card!]!
+  crowns: Int!
+  kingTowerHitPoints: Int!
+  princessTowersHitPoints: [Int!]!
+  startingTrophies: Int
+  trophyChange: Int
+}

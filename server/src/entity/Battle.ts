@@ -1,11 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  BaseEntity,
-  ManyToMany,
-  JoinTable,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm';
 import { Arena, Player } from './Player';
 
 @Entity('clash_battles')
@@ -24,6 +17,12 @@ export class Battle extends BaseEntity {
 
   @Column('jsonb')
   gameMode: string;
+
+  @Column('jsonb')
+  team: Array<Player>;
+
+  @Column('jsonb')
+  opponent: Array<Player>;
 
   @Column('bool')
   isLadderTournament: boolean;

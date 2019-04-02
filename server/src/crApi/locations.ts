@@ -1,11 +1,11 @@
 import axios from 'axios';
-import { Card } from '../entity/Player';
+import { Location } from '../entity/Clan';
 
 const CLASH_API_KEY = process.env.CLASH_API_KEY;
 
-export const getCards = async (): Promise<Array<Card>> => {
+export const getLocations = async (): Promise<Array<Location>> => {
   try {
-    const url = 'https://api.clashroyale.com/v1/cards';
+    const url = 'https://api.clashroyale.com/v1/locations';
     const res = await axios.get(url, {
       headers: {
         Accept: 'application/json',

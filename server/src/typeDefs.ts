@@ -1,6 +1,17 @@
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import { gql } from 'apollo-server-express';
 
-export const typeDefs = gql`
+/*
+ * Check for GRAPHQL_SCHEMA environment variable to specify schema file
+ * fallback to schema.graphql if GRAPHQL_SCHEMA environment variable is not set
+ */
+
+export const typeDefs = readFileSync(
+  process.env.GRAPHQL_SCHEMA || join(__dirname, 'schema.graphql')
+).toString('utf-8');
+
+export const typeDefs_DEPRECATED = gql/* GraphQL */ `
   type Subscription {
     battleAdded: Battle!
     clanUpsert: Clan!

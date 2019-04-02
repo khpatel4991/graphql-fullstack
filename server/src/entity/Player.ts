@@ -1,11 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  BaseEntity,
-  ManyToMany,
-  JoinTable,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm';
 import { Battle } from './Battle';
 
 export type Achievement = {
@@ -72,6 +65,8 @@ export class Player extends BaseEntity {
   clan: Clan;
   @Column('integer')
   clanCardsCollected: number;
+  @Column('integer')
+  crowns: number;
   @Column('jsonb')
   currentDeck: Card[];
   @Column('jsonb')
@@ -82,16 +77,22 @@ export class Player extends BaseEntity {
   donationsReceived: number;
   @Column('integer')
   expLevel: number;
+  @Column('integer')
+  kingTowerHitPoints: number;
   @Column('jsonb')
   leagueStatistics: LeagueStatistics;
   @Column('integer')
   losses: number;
   @Column('varchar')
   name: string;
+  @Column('simple-array')
+  princessTowersHitPoints: Array<number>;
   @Column('varchar')
   role: string;
   @Column('integer')
   starPoints: number;
+  @Column('integer')
+  startingTrophies: number;
   @Column('varchar', { unique: true })
   tag: string;
   @Column('integer')
@@ -105,11 +106,12 @@ export class Player extends BaseEntity {
   @Column('integer')
   trophies: number;
   @Column('integer')
+  trophyChange: number;
+  @Column('integer')
   warDayWins: number;
   @Column('integer')
   wins: number;
 
-  @ManyToMany(_ => Battle)
-  @JoinTable({ name: 'clash_player_battles' })
-  battles: Battle[];
+  battlesAsTeam: Battle[];
+  battlesAsOpponents: Battle[];
 }
