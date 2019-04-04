@@ -1,8 +1,6 @@
 import 'dotenv/config';
 
-import 'reflect-metadata';
-import { PubSub } from 'graphql-subscriptions';
-import { ApolloServer } from 'apollo-server';
+import { ApolloServer, PubSub } from 'apollo-server';
 import { v1 as neo4j } from 'neo4j-driver';
 import { makeAugmentedSchema } from 'neo4j-graphql-js';
 import { resolvers } from './resolvers';
@@ -31,11 +29,6 @@ const startServer = async () => {
   });
   apollo.listen(process.env.GRAPHQL_LISTEN_PORT, '0.0.0.0').then(({ url }) => {
     console.log(`GraphQL API ready at ${url}`);
-    // const server = createServer();
-    // apollo.installSubscriptionHandlers(server);
-    // server.listen(5001, '0.0.0.0', () => {
-    //   console.log(`🚀 Subscriptions Server Ready at http://localhost:5001`);
-    // });
   });
 };
 
