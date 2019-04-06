@@ -2,6 +2,12 @@ import { gql } from 'apollo-server';
 import { client } from '../client';
 import { getClan } from '../crApi';
 import { Clan } from '../entity/Clan';
+import {
+  generatePlayerTagMutation,
+  execMutation,
+  generateClanMemberListMutations,
+} from '../g';
+import { logger } from '../logger';
 
 const findClan = async (tag: string): Promise<Clan> => {
   const query = /* GraphQL */ `
@@ -19,7 +25,7 @@ const clanMutation = (crResponse: Clan, create = true) => {
   const Entity = 'Clan';
   const pre = create ? `Create${Entity}` : `Update${Entity}`;
   return /* GraphQL */ `mutation {
-  c1: ${pre}(tag:"${crResponse.tag}", badgeId:${
+  clan: ${pre}(tag:"${crResponse.tag}", badgeId:${
     crResponse.badgeId
   }, clanChestLevel:${crResponse.clanChestLevel}, clanChestMaxLevel:${
     crResponse.clanChestMaxLevel
@@ -31,7 +37,7 @@ const clanMutation = (crResponse: Clan, create = true) => {
     crResponse.donationsPerWeek
   }, name: "${crResponse.name}", members: ${crResponse.members}, type:"${
     crResponse.type
-  }") { tag } }
+  }") { tag badgeId clanChestLevel clanChestMaxLevel clanChestPoints clanScore clanWarTrophies donationsPerWeek name members type } }
 `.trim();
 };
 
@@ -42,9 +48,14 @@ export const clanTag = async (_: any, { tag }: any, __: any) => {
       throw new Error('Cant find clan with tag');
     }
     const existingClan = await findClan(tag);
-    await client.mutate({
-      mutation: gql(clanMutation(clan, !existingClan)),
-    });
+    await execMutation(clanMutation(clan, !existingClan));
+    const newTags = clan.memberList.map(m => m.tag);
+    logger.info(`Clan has ${newTags.length} members`);
+    const nstm = Array.from(newTags).map(generatePlayerTagMutation);
+    const newPlayers = await Promise.all(nstm.map(execMutation));
+    const tm = clan.memberList.map(generateClanMemberListMutations(clan));
+    await Promise.all(tm.map(execMutation));
+    logger.info(`${newPlayers.filter(m => !!m).length} persisted`);
     return clan;
   } catch (e) {
     return e;

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { Player } from '../entity/Player';
+import { logger } from '../logger';
 const CLASH_API_KEY = process.env.CLASH_API_KEY;
 
 const playerUrl = (playerTag: string): string => {
@@ -10,6 +11,7 @@ const playerUrl = (playerTag: string): string => {
 export const getPlayer = async (playerTag: string): Promise<Player | null> => {
   try {
     const url = playerUrl(playerTag);
+    logger.debug(`API Request GET ${url}`);
     const res = await axios.get(url, {
       headers: {
         Accept: 'application/json',

@@ -4,27 +4,8 @@ type Mutation {
   playerTag(tag: String!): Player
 }
 
-type Arena {
-  id: ID!
-  name: String!
-  battles: [Battle!]! @relation(name: "PLAYED_IN", direction: "IN")
-  players: [Player!]! @relation(name: "LADDER_ARENA", direction: "OUT")
-}
-
-type Battle {
-  id: ID!
-  arena: Arena! @relation(name: "PLAYED_IN", direction: "OUT")
-  battleTime: DateTime!
-  gameMode: GameMode! @relation(name: "GAME_MODE", direction: "OUT")
-  isLadderTournament: Boolean!
-  opponent: [Opponent!]!
-  team: [Team!]!
-  type: String!
-}
-
 interface BattlePlayer {
   id: ID!
-  cards: [Card!]!
   crowns: Int!
   kingTowerHitPoints: Int
   princessTowersHitPoints: [Int]!
@@ -32,9 +13,30 @@ interface BattlePlayer {
   trophyChange: Int
 }
 
+interface IDeckCard {
+  level: Int!
+}
+
+type Arena {
+  id: ID!
+  name: String!
+  battles: [Battle!]!
+  players: [Player!]!
+}
+
+type Battle {
+  id: ID!
+  arena: Arena!
+  battleTime: DateTime!
+  gameMode: GameMode!
+  isLadderTournament: Boolean!
+  opponent: [Opponent!]!
+  team: [Team!]!
+  type: String!
+}
+
 type Card {
   id: ID!
-  level: Int
   name: String!
   maxLevel: Int!
   iconurl: String!
@@ -51,10 +53,10 @@ type Clan {
   clanWarTrophies: Int
   description: String!
   donationsPerWeek: Int!
-  location: Location! @relation(name: "IN_REGION", direction: "IN")
+  location: Location!
   name: String!
   members: Int!
-  memberList: [ClanMember!] @relation(name: "MEMBER_OF", direction: "IN")
+  memberList: [ClanMember!]
   type: String!
 }
 
@@ -73,7 +75,6 @@ type ClanMember @relation(name: "MEMBER_OF") {
 type GameMode {
   id: ID!
   name: String!
-  battles: [Battle!]! @relation(name: "GAME_MODE", direction: "IN")
 }
 
 type Location {
@@ -81,14 +82,13 @@ type Location {
   name: String!
   isCountry: Boolean!
   countryCode: String!
-  clans: [Clan!] @relation(name: "IN_REGION", direction: "OUT")
+  clans: [Clan!]
 }
 
 type Opponent implements BattlePlayer @relation(name: "OPPONENT") {
   id: ID!
   from: Battle!
   to: Player!
-  cards: [Card!]!
   crowns: Int!
   kingTowerHitPoints: Int
   princessTowersHitPoints: [Int]!
@@ -98,18 +98,18 @@ type Opponent implements BattlePlayer @relation(name: "OPPONENT") {
 
 type Player {
   tag: ID!
-  arena: Arena! @relation(name: "LADDER_ARENA", direction: "IN")
+  # arena: Arena! @relation(name: "LADDER_ARENA", direction: "IN")
   asTeam: [Team!]
   asOpponent: [Opponent!]
   battleCount: Int!
   bestTrophies: Int!
-  cards: [Card!]!
+  cards: [PlayerCard!]
   challengeCardsWon: Int!
   challengeMaxWins: Int!
-  clan: Clan @relation(name: "MEMBER_OF", direction: "OUT")
+  clan: ClanMember
   clanCardsCollected: Int!
-  currentDeck: [Card!]!
-  currentFavouriteCard: Card!
+  currentDeck: [CurrentDeckCard!]
+  currentFavouriteCard: Card @relation(name: "FAVOURITE_CARD", direction: IN)
   expLevel: Int!
   losses: Int!
   name: String!
@@ -123,11 +123,22 @@ type Player {
   wins: Int!
 }
 
+type PlayerCard implements IDeckCard @relation(name: "PLAYER_CARD") {
+  from: Card!
+  to: Player!
+  level: Int!
+}
+
+type CurrentDeckCard implements IDeckCard @relation(name: "CURRENT_DECK") {
+  from: Card!
+  to: Player!
+  level: Int!
+}
+
 type Team implements BattlePlayer @relation(name: "TEAM") {
   id: ID!
   from: Battle!
   to: Player!
-  cards: [Card!]!
   crowns: Int!
   kingTowerHitPoints: Int
   princessTowersHitPoints: [Int]!

@@ -1,14 +1,15 @@
-import { gql } from 'apollo-server';
-import { client } from '../client';
 import { getPlayerBattleLog } from '../crApi';
 import { Battle } from '../entity/Battle';
-import { FetchResult } from 'apollo-link';
 import {
   findPlayer,
   generatePlayerTagMutation,
   generateBattleTeamMutations,
   generateBattleOpponentMutations,
+  execMutation,
+  queryBattle,
 } from '../g';
+import { client } from '../client';
+import { gql } from 'apollo-server';
 
 // import { PlayerBattle } from '../entity/PlayerBattle';
 
@@ -29,22 +30,6 @@ const generateMutations = (battle: Battle, i: number) => {
     { id isLadderTournament }
   }
   `.trim();
-};
-
-const execMutation = (
-  m: string
-): Promise<FetchResult<{ data: any }> | false> => {
-  return new Promise(async resolve => {
-    try {
-      const result = await client.mutate({
-        mutation: gql(m),
-        fetchPolicy: 'no-cache',
-      });
-      resolve(result);
-    } catch (e) {
-      resolve(false);
-    }
-  });
 };
 
 const enhanceBattle = battle => {
@@ -93,14 +78,15 @@ export const battleLog = async (_: any, { playerTag }: any, __: any) => {
       b.team.map(t => t.tag).concat(b.opponent.map(o => o.tag))
     )
   );
-  console.log(`Encountered ${newTags.size} tags`);
   const nstm = Array.from(newTags).map(generatePlayerTagMutation);
-  const newPlayers = await Promise.all(nstm.map(execMutation));
-  console.log(`${newPlayers.filter(m => !!m).length} persisted`);
+  await Promise.all(nstm.map(execMutation));
   const tm = battles.map(generateBattleTeamMutations);
   const om = battles.map(generateBattleOpponentMutations);
   const all = [...tm, ...om];
-  const result = await Promise.all(all.map(execMutation));
-  console.log(`${result.filter(m => !!m).length} persisted`);
-  return battles;
+  await Promise.all(all.map(execMutation));
+  const bq = queryBattle();
+  const { data } = await client.query({
+    query: gql(bq),
+  });
+  return data.battles;
 };

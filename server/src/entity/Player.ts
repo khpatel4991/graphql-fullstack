@@ -66,6 +66,10 @@ export class Player extends BaseEntity {
   @Column('integer')
   clanCardsCollected: number;
   @Column('integer')
+  clanChestPoints: number;
+  @Column('integer')
+  clanRank: number;
+  @Column('integer')
   crowns: number;
   @Column('jsonb')
   currentDeck: Card[];
@@ -85,6 +89,8 @@ export class Player extends BaseEntity {
   losses: number;
   @Column('varchar')
   name: string;
+  @Column('integer')
+  previousClanRank: number;
   @Column('simple-array')
   princessTowersHitPoints: Array<number>;
   @Column('varchar')

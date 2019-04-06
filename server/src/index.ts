@@ -5,7 +5,7 @@ import { v1 as neo4j } from 'neo4j-driver';
 import { makeAugmentedSchema } from 'neo4j-graphql-js';
 import { resolvers } from './resolvers';
 import { typeDefs } from './typeDefs';
-// import { createServer } from 'http';
+import { logger } from './logger';
 
 export const pubsub = new PubSub();
 
@@ -28,8 +28,10 @@ const startServer = async () => {
     schema,
   });
   apollo.listen(process.env.GRAPHQL_LISTEN_PORT, '0.0.0.0').then(({ url }) => {
-    console.log(`GraphQL API ready at ${url}`);
+    logger.info(`GraphQL API ready at ${url}`);
   });
 };
 
-startServer().catch(console.log);
+startServer().catch(e => {
+  logger.error(e);
+});
