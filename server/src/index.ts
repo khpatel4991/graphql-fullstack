@@ -12,6 +12,15 @@ export const pubsub = new PubSub();
 const schema = makeAugmentedSchema({
   typeDefs,
   resolvers,
+  config: {
+    debug: false,
+    query: {
+      exclude: ['BattleLogPayload'],
+    },
+    mutation: {
+      exclude: ['BattleLogPayload'],
+    },
+  },
 });
 
 const driver = neo4j.driver(
@@ -26,6 +35,9 @@ const startServer = async () => {
   const apollo = new ApolloServer({
     context: { driver },
     schema,
+    cors: {
+      origin: '*',
+    },
   });
   apollo.listen(process.env.GRAPHQL_LISTEN_PORT, '0.0.0.0').then(({ url }) => {
     logger.info(`GraphQL API ready at ${url}`);

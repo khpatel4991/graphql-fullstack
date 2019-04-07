@@ -18,8 +18,7 @@ export const execMutation = (m: string): Promise<FetchResult<any>> => {
       logger.debug(`[M]:"${clean(m)}"`);
       resolve(result);
     } catch (e) {
-      logger.debug(e);
-      logger.error(`[M]:"${clean(m)}, reason: ${e}"`);
+      logger.error(`[M]:"${clean(m).slice(0, 20)}, reason: ${e}"`);
       resolve(e);
     }
   });
@@ -84,7 +83,7 @@ export const generateBattleTeamMutations = (battle: Battle, i: number) => {
       from: { id:"${battle.id}" },
       to: { tag:"${t.tag}" },
       data: {
-        id: "${battle.id}:t",
+        id: "${battle.id}",
         crowns: ${t.crowns},
         kingTowerHitPoints:${t.kingTowerHitPoints || 0},
         princessTowersHitPoints:[${t.princessTowersHitPoints || ''}],
@@ -105,7 +104,7 @@ export const generateBattleOpponentMutations = (battle: Battle, i: number) => {
       from: { id:"${battle.id}" },
       to: { tag:"${t.tag}" },
       data: {
-        id: "${battle.id}:o",
+        id: "${battle.id}",
         crowns: ${t.crowns},
         kingTowerHitPoints:${t.kingTowerHitPoints || 0},
         princessTowersHitPoints:[${t.princessTowersHitPoints || ''}],
@@ -148,6 +147,7 @@ export const findPlayer = async (tag: string): Promise<Player | null> => {
       trophies
       warDayWins
       wins
+      asTeam { id Battle { battleTime { formatted } } }
     }
   `;
   const q = `query{${query}}`;

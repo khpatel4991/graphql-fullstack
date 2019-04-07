@@ -6,17 +6,17 @@ import { Alert } from 'reactstrap';
 
 import './styles.css';
 
-const ME = gql`
-  {
-    me {
-      id
-      email
-    }
-  }
-`;
-
 export const PlayerView = () => {
-  const { data, error, loading } = useQuery(ME);
+  const q = gql`
+    {
+      Player(tag: "#GR2YL92L") {
+        tag
+        name
+        trophies
+      }
+    }
+  `;
+  const { data, error, loading } = useQuery(q);
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -24,15 +24,16 @@ export const PlayerView = () => {
     return <Alert color="danger">Error! {error.message}</Alert>;
   }
 
-  if (data.me === null) {
-    data.me = { email: 'john@doe.com' };
-  }
-  if (data.me.playerTag) {
-    return <p>Lets get your profile from tag: {data.me.playerTag}</p>;
+  if (!data.Player) {
+    data.Player = {
+      tag: 'unknown',
+      name: 'Guest',
+      trophies: 'Anything you wish',
+    };
   }
   return (
     <div className="player-view-container">
-      <h2>Let's add your Clash Royale Player Tag</h2>
+      <h2>Let's add your Clash Royale Player Tag: ${data.Player.tag}</h2>
       <CachedTypeAhead />
     </div>
   );

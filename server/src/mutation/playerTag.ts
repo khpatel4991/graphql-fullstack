@@ -12,7 +12,6 @@ export const playerTag = async (_: any, { tag }: any, __: any) => {
     await upsertPlayer(player, existingPlayer);
     return player;
   } catch (e) {
-    console.log(`Error: ${e.message}`);
     return e;
   }
 };

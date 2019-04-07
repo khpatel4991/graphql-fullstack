@@ -50,6 +50,10 @@ export class Player extends BaseEntity {
   @Column('jsonb')
   arena: Arena;
   @Column('jsonb')
+  asTeam: Array<{ id: string; Battle: Battle }>;
+  @Column('jsonb')
+  asOpponent: Array<{ id: string; Battle: Battle }>;
+  @Column('jsonb')
   badges: Badge[];
   @Column('integer')
   battleCount: number;

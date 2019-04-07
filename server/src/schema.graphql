@@ -1,5 +1,5 @@
 type Mutation {
-  battleLog(playerTag: String!): [Battle!]
+  battleLog(playerTag: String!): BattleLogPayload!
   clanTag(tag: String!): Clan
   playerTag(tag: String!): Player
 }
@@ -33,6 +33,12 @@ type Battle {
   opponent: [Opponent!]!
   team: [Team!]!
   type: String!
+}
+
+type BattleLogPayload {
+  battles: [Battle!]
+  players: [Player!]
+  clanTags: [String!]
 }
 
 type Card {

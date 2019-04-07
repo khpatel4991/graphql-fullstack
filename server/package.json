@@ -54,7 +54,7 @@
     "typeorm": "0.2.15"
   },
   "scripts": {
-    "start": "nodemon --exec ts-node src/index.ts",
+    "start": "nodemon --exec ts-node src/index.ts  | node -r ts-node/register src/process/transport.ts",
     "seedDb": "ts-node src/migration/seed.ts"
   }
 }
