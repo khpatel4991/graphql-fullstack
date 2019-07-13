@@ -40,7 +40,7 @@
     "express-session": "^1.15.6",
     "graphql": "^14.1.1",
     "graphql-tag": "^2.10.1",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "neo4j-driver": "^1.7.3",
     "neo4j-graphql-js": "^2.4.2",
     "pg": "^7.3.0",
